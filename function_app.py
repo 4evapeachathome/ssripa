@@ -2,11 +2,7 @@ import azure.functions as func
 import json
 from rag_answer import generate_consolidated_answer
 
-app = func.FunctionApp()
-
-@app.route(route="rag_query")
-@app.function_name("rag_query")
-def rag_query(req: func.HttpRequest) -> func.HttpResponse:
+def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
         # Get request body
         req_body = req.get_json()
@@ -30,16 +26,12 @@ def rag_query(req: func.HttpRequest) -> func.HttpResponse:
         # Generate consolidated answer
         answer = generate_consolidated_answer(questions)
         
-        # Return response
         return func.HttpResponse(
-            json.dumps({
-                "status": "success",
-                "answer": answer
-            }),
+            json.dumps({"answer": answer}),
             mimetype="application/json"
         )
         
-    except ValueError as ve:
+    except ValueError:
         return func.HttpResponse(
             json.dumps({"error": "Invalid JSON in request body"}),
             mimetype="application/json",
