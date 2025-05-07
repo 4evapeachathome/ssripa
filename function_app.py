@@ -1,8 +1,9 @@
 import azure.functions as func
+import logging
 import json
 from rag_answer import generate_consolidated_answer
 
-def main(req: func.HttpRequest) -> func.HttpResponse:
+def main(req: func.HttpRequest, logger: logging.Logger) -> func.HttpResponse:
     try:
         # Get request body
         req_body = req.get_json()
@@ -31,15 +32,17 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             mimetype="application/json"
         )
         
-    except ValueError:
+    except ValueError as e:
+        logger.error(f"Invalid JSON in request body: {str(e)}")
         return func.HttpResponse(
             json.dumps({"error": "Invalid JSON in request body"}),
             mimetype="application/json",
             status_code=400
         )
     except Exception as e:
+        logger.error(f"An error occurred: {str(e)}")
         return func.HttpResponse(
-            json.dumps({"error": str(e)}),
+            json.dumps({"error": "An error occurred"}),
             mimetype="application/json",
             status_code=500
         )
