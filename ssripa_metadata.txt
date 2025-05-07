@@ -1,0 +1,122 @@
+Question: Are you experiencing physical harm from your partner or spouse?
+Severity: High
+Actions:
+- Call 911 and seek immediate help from hospital emergency services.
+- Call the National Domestic Violence Hotline 1-800-799-SAFE (7233) or contact https://www.thehotline.org.
+- Reach to service providers.
+- Create a personalized safety plan, including emergency escape options.
+- Take legal assistance to get a Restraining Order.
+- Keep a private journal to record any physical harm.
+
+Question: Are you experiencing sexual pain or feeling forced by your partner or spouse?
+Severity: High
+Actions:
+- Seek Counselling Service.
+- Seek Couples Counseling, Sex Therapy.
+- Practice Routine Self-Care and Forgiveness.
+- Seek mental health support for trauma processing.
+- Keep a private journal to record any abuse or violence.
+
+Question: Are you feeling threatened by your partner or spouse?
+Severity: High
+Actions:
+- Seek protective legal remedies and connections to law enforcement if comfortable.
+- Seek legal guidance on RO and court procedures.
+- Explore relocation, shelter, or alternate housing if needed.
+- Keep a private journal to record any abuse or violence.
+
+Question: Have your children witnessed or experienced any harm caused by your partner or spouse?
+Severity: High
+Actions:
+- Reach to school counseling service.
+- Reach out to a general medical practitioner or pediatrician in your area.
+- Ensure children's safety and give child-specific trauma resources.
+- Seek support for parenting under stress.
+- Seek support from service providers.
+- Comply with mandatory reporting if harm to children is disclosed or suspected.
+- Seek legal advice or assistance.
+- Keep a private journal to record any abuse or violence.
+
+Question: Are you being verbally hurt by your partner or spouse?
+Severity: Medium
+Actions:
+- Confront the partner.
+- Reach out to a trusted friend or family member, therapist to talk about what you are going through.
+- Seek mental health services or support groups.
+- Practice Self-Care.
+- Develop coping skills.
+- Seek psychoeducation on verbal/emotional abuse and its impacts.
+- Keep a private journal to record any abuse or violence.
+
+Question: Are you being coerced into reproduction by your partner or spouse?
+Severity: Medium
+Actions:
+- Seek service providers' help.
+- Talk to a health care provider or gynecologist.
+- Seek Couples Counseling.
+- Make a safety plan.
+- Keep a private journal to record any abuse or violence.
+
+Question: Are you mentally or emotionally hurt by your partner or spouse?
+Severity: Medium
+Actions:
+- Seek Professional Therapy/counseling.
+- Practice Routine Self-Care and Forgiveness.
+- Consider reaching out to a trusted friend or family member to talk about what you are going through.
+- Keep a private journal to record any abuse or violence.
+
+Question: Are you being stalked (followed) by your partner or spouse?
+Severity: Medium
+Actions:
+- Prioritize Safety planning.
+- Document incidents and reporting options.
+- Seek legal remedies such as harassment prevention orders.
+- Keep a private journal to record any abuse or violence.
+
+Question: Are you experiencing love bombing or gaslighting by your partner or spouse?
+Severity: Medium
+Actions:
+- Consider therapy.
+- Seek Professional Help.
+- Educate yourself.
+- Reach out to a trusted friend or family member to talk about what you are going through.
+- Keep a private journal to record any abuse or violence.
+
+Question: Are you financially abused or deprived by your partner or spouse?
+Severity: Medium
+Actions:
+- Hold a separate/own bank account.
+- Keep cash and valuables in a safe.
+- Speak to an adviser from the National Domestic Abuse Helpline.
+- Keep a private journal to record any abuse or violence.
+
+Question: Are you being monitored or tracked in your digital or web activities by your partner or spouse?
+Severity: Medium
+Actions:
+- Consider changing your phone number or email addresses, blocking them on social media.
+- Secure your devices and home.
+- Use strong passwords, enable two-factor authentication, change networks, and consider security measures for your home.
+- Seek Legal Advice.
+- Keep a private journal to record any abuse or violence.
+
+Question: Do you and your partner or spouse often quarrel, resulting in misunderstandings?
+Severity: Low
+Actions:
+- Have open communications.
+- Consider couple's therapy.
+- Explore conflict resolution strategies and communication styles.
+- Practice Routine Self-Care and forgiveness.
+- Determine whether the arguments are part of a broader cycle of abuse.
+- Seek mental health support and advocate check-ins.
+- Keep a private journal to record any abuse or violence.
+
+Question: Are you experiencing feelings of restriction or overwhelming pressure in your relationship with your partner or spouse?
+Severity: Low
+Actions:
+- Prioritize open and honest communication with your partner.
+- Identify the kind of pressure & share concerns with people you trust.
+- Build Your Support Network.
+- Practice Self-Care.
+- Seek professional guidance.
+- Keep a private journal to record any abuse or violence.
+

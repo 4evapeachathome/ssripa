@@ -1,0 +1,4 @@
+This is a sample document for the RAG application.
+It contains some example text that can be used for testing the retrieval system.
+The RAG (Retrieval-Augmented Generation) system will process this text and create embeddings.
+These embeddings will be used to perform semantic search and enhance the generation capabilities.
