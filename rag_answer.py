@@ -22,17 +22,69 @@ def get_embedding(text):
     embedding = embedding_model.encode([text])[0]
     return embedding.astype('float32')
 
-def retrieve_similar_chunks(query, k=3):
+def retrieve_similar_chunks(query, k=1, threshold=1.0):
+    """Retrieve similar chunks with similarity scores.
+    
+    Args:
+        query (str): The query text
+        k (int): Number of results to retrieve
+        threshold (float): Maximum L2 distance threshold (lower = more similar)
+    
+    Returns:
+        list: List of dictionaries containing content and similarity metrics
+    """
     query_embedding = get_embedding(query).astype("float32")
     distances, indices = index.search(np.array([query_embedding]), k)
-    return [documents[i] for i in indices[0]]
+    
+    results = []
+    # Iterate over the distances and indices in parallel using zip
+    # This combines the two lists into a list of tuples
+    # e.g. [(dist_1, idx_1), (dist_2, idx_2), ...]
+    for dist, idx in zip(distances[0], indices[0]):
+        if dist <= threshold:
+            results.append({
+                "content": documents[idx],
+                "similarity_score": float(1 / (1 + dist)),  # Convert to similarity (0-1)
+                "distance": float(dist)
+            })
+    return results
 
 def generate_answer(query):
+    """Generate an answer using retrieved context with confidence scores.
+    
+    Args:
+        query (str): The user's question
+    
+    Returns:
+        dict: Answer and retrieval metadata
+    """
     relevant_chunks = retrieve_similar_chunks(query)
-    context = "\n\n".join(relevant_chunks)
-
+    
+    if not relevant_chunks:
+        return {
+            "answer": "I couldn't find relevant information to answer your question accurately.",
+            "confidence": 0.0,
+            "sources": []
+        }
+    
+    # Sort chunks by similarity score and format context
+    relevant_chunks.sort(key=lambda x: x['similarity_score'], reverse=True)
+    context_parts = []
+    sources = []
+    
+    for i, chunk in enumerate(relevant_chunks, 1):
+        context_parts.append(f"[{i}] {chunk['content']}")
+        sources.append({
+            "chunk_id": i,
+            "similarity_score": chunk['similarity_score'],
+            "distance": chunk['distance']
+        })
+    
+    context = "\n\n".join(context_parts)
+    
     prompt = f"""
-You are a helpful assistant answering questions based on an action plan and severity document. Use only the provided context to answer.
+You are a helpful assistant answering questions based on an action plan and severity document.
+Use only the provided context to answer. Reference the source numbers [1], [2], etc. when using information.
 
 Context:
 {context}
@@ -44,40 +96,70 @@ Answer:"""
 
     response = client.chat.completions.create(
         model="gpt-4",
-        messages=[
-            {"role": "user", "content": prompt}
-        ],
+        messages=[{"role": "user", "content": prompt}],
         temperature=0.3,
         max_tokens=500
     )
 
-    return response.choices[0].message.content.strip()
+    # Calculate overall confidence based on similarity scores
+    avg_similarity = sum(chunk['similarity_score'] for chunk in relevant_chunks) / len(relevant_chunks)
+    
+    return {
+        "answer": response.choices[0].message.content.strip(),
+        "confidence": float(avg_similarity),
+        "sources": sources
+    }
 
 def generate_consolidated_answer(queries):
-    """Process multiple questions and provide a consolidated, natural response."""
-    # Collect context and questions
-    all_contexts = []
-    for query in queries:
-        relevant_chunks = retrieve_similar_chunks(query)
-        all_contexts.extend(relevant_chunks)
+    """Process multiple questions and provide a consolidated, natural response with sources.
     
-    # Remove duplicates while preserving order
+    Args:
+        queries (list): List of questions from the user
+    
+    Returns:
+        dict: Consolidated answer with metadata
+    """
+    # Collect context and questions with metadata
+    all_contexts = []
+    query_results = {}
+    
+    for query in queries:
+        chunks = retrieve_similar_chunks(query)
+        if chunks:  # Only include if relevant chunks were found
+            query_results[query] = chunks
+            all_contexts.extend(chunks)
+    
+    if not all_contexts:
+        return {
+            "answer": "I couldn't find relevant information to answer your questions accurately.",
+            "confidence": 0.0,
+            "sources": [],
+            "query_confidences": {}
+        }
+    
+    # Remove duplicates while preserving order and tracking sources
     unique_contexts = []
     seen = set()
-    for context in all_contexts:
-        if context not in seen:
-            unique_contexts.append(context)
-            seen.add(context)
+    context_parts = []
+    sources = []
     
-    context = "\n\n".join(unique_contexts)
-    print("\n🔍 Context used for answering:")
-    print(context)
+    for i, chunk in enumerate(all_contexts, 1):
+        if chunk['content'] not in seen:
+            seen.add(chunk['content'])
+            unique_contexts.append(chunk)
+            context_parts.append(f"[{i}] {chunk['content']}")
+            sources.append({
+                "chunk_id": i,
+                "similarity_score": chunk['similarity_score'],
+                "distance": chunk['distance']
+            })
+    
+    context = "\n\n".join(context_parts)
     questions_text = "\n".join([f"- {q}" for q in queries])
-
+    
     prompt = f"""
-You are an empathetic counselor analyzing multiple questions about someone's relationship situation. 
-Provide a thoughtful, consolidated response that addresses all their concerns in a natural, conversational way. 
-Make it feel like a real-time analysis of their situation.
+You are a helpful assistant analyzing multiple related questions about a situation.
+Use the provided context to answer and reference source numbers [1], [2], etc. when using information.
 
 Context from our knowledge base:
 {context}
@@ -94,14 +176,25 @@ Please provide a natural, flowing response that:
 
     response = client.chat.completions.create(
         model="gpt-4",
-        messages=[
-            {"role": "user", "content": prompt}
-        ],
+        messages=[{"role": "user", "content": prompt}],
         temperature=0.7,
         max_tokens=800
     )
 
-    return response.choices[0].message.content.strip()
+    # Calculate confidence scores
+    query_confidences = {}
+    for query, chunks in query_results.items():
+        avg_similarity = sum(chunk['similarity_score'] for chunk in chunks) / len(chunks)
+        query_confidences[query] = float(avg_similarity)
+    
+    overall_confidence = sum(query_confidences.values()) / len(query_confidences)
+    
+    return {
+        "answer": response.choices[0].message.content.strip(),
+        "confidence": overall_confidence,
+        "sources": sources,
+        "query_confidences": query_confidences
+    }
 
 def batch_generate_answers(queries):
     """Process multiple questions in batch and return their answers."""
