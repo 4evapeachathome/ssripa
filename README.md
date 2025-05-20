@@ -1,43 +1,71 @@
-# RAG (Retrieval-Augmented Generation) Application
+# SSRIPA RAG System
 
-This is a Python-based RAG system that implements document processing, embedding generation, and similarity search for enhanced text generation.
+A modern Retrieval-Augmented Generation (RAG) system built with FastAPI and Azure Functions, leveraging state-of-the-art language models and vector stores for efficient document processing and retrieval.
 
-## Project Structure
+## Tech Stack
 
-```
-rag-app/
-├── src/
-│   ├── document_processor.py  # Document loading and chunking
-│   ├── embedding_manager.py   # Embedding generation and storage
-│   └── rag_engine.py         # Main RAG implementation
-├── config/
-│   └── config.py             # Configuration settings
-├── data/                     # Your input documents
-├── embeddings/              # Stored embeddings and indices
-├── tests/                   # Test files
-└── docs/                    # Documentation
-```
+### Core Infrastructure
+- FastAPI
+- Azure Functions
+- Python 3.9
+
+### RAG Components
+- LangChain 0.1.0
+- ChromaDB 0.4.22
+- FAISS-CPU 1.7.4
+- OpenAI 1.0.0
+
+### Embedding Models
+- HuggingFace Sentence Transformers 2.2.2
+- OpenAI Ada
+
+### Document Processing
+- PyPDF 4.0.1
+- python-magic 0.4.27
+- Tiktoken 0.5.2
+
+### Data & Utilities
+- NumPy 1.24.3
+- Pandas 2.1.0
+- python-dotenv 1.0.0
+- Pydantic 2.4.2
+
+### Testing & Development
+- Pytest 7.4.2
+- Uvicorn 0.24.0
+
+### Deployment
+- GitHub Actions
+- Azure Functions
 
 ## Features
 
-- Document Processing
-  - Support for TXT and PDF files
-  - Intelligent document chunking
-  - Directory-based document loading
+- **Advanced Document Processing**
+  - PDF and text document support
+  - Intelligent text chunking with overlap
+  - Automatic metadata extraction
+  - Token-aware document splitting
 
-- Embedding Generation
-  - HuggingFace Embeddings support
-  - OpenAI Embeddings support
-  - FAISS-based similarity search
+- **Flexible Embedding Generation**
+  - Dual embedding model support (HuggingFace and OpenAI)
+  - Efficient batch processing
+  - Vector store persistence
 
-- Storage
-  - Local file-based storage
-  - FAISS index persistence
-  - Metadata management
+- **Intelligent Retrieval**
+  - Hybrid search capabilities
+  - Context-aware document retrieval
+  - Semantic similarity ranking
+  - FAISS-powered vector search
+
+- **API Integration**
+  - RESTful API endpoints
+  - Azure Functions serverless deployment
+  - Async request handling
+  - Structured response formats
 
 ## Setup
 
-1. Create a virtual environment:
+1. Clone the repository and create a virtual environment:
    ```bash
    python -m venv .venv
    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
@@ -48,50 +76,59 @@ rag-app/
    pip install -r requirements.txt
    ```
 
-3. Configure environment variables:
-   Create a `.env` file with:
+3. Configure environment variables in `.env`:
    ```
-   OPENAI_API_KEY=your_key_here  # If using OpenAI embeddings
+   OPENAI_API_KEY=your_key_here
+   AZURE_FUNCTION_KEY=your_azure_key
    ```
 
 ## Usage
 
-Basic usage example:
+### API Endpoints
 
 ```python
-from src.rag_engine import RAGEngine
+# Document Processing
+POST /process-documents
+- Uploads and processes documents
+- Returns processing status and document IDs
 
-# Initialize RAG engine
-rag = RAGEngine()
+# Query Generation
+POST /generate-answer
+- Accepts user query and optional parameters
+- Returns RAG-enhanced response with sources
 
-# Process documents
-rag.process_documents("data/")
-
-# Query the system
-results = rag.query("Your query here")
-for result in results:
-    print(f"Rank {result['rank']}: {result['content']}")
+# Vector Store Management
+GET /vector-store-info
+- Retrieves vector store statistics
+- Shows embedding distribution
 ```
 
-## Development Phases
+### Example Query
 
-1. Setup and Data Preparation ✓
-   - Project scaffolding
-   - Dependencies setup
-   - Document preprocessing
+```python
+import requests
 
-2. Embedding and Storage ✓
-   - Multiple embedding options
-   - Local storage implementation
-   - FAISS integration
+response = requests.post(
+    "http://localhost:8000/generate-answer",
+    json={
+        "query": "What are the key features?",
+        "max_tokens": 500,
+        "temperature": 0.7
+    }
+)
 
-3. Retrieval and Augmentation ✓
-   - Similarity search
-   - Context retrieval
+print(response.json())
+```
 
-4. Generation and Evaluation (In Progress)
-   - LLM integration
-   - System evaluation
+## Development Status
+
+✅ Core RAG Implementation
+✅ Document Processing Pipeline
+✅ Embedding Generation System
+✅ Vector Store Integration
+✅ API Development
+✅ Azure Functions Deployment
+🔄 Continuous Improvements & Optimizations
 
 ## License
 
