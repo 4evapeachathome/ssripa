@@ -2,23 +2,25 @@ import os
 from openai import OpenAI
 import faiss
 import numpy as np
+from sentence_transformers import SentenceTransformer
 
 # Initialize OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+# Initialize sentence transformer for local embeddings
+embedding_model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
+
 # Load FAISS index
-index = faiss.read_index("ssripa_index.faiss")
+index = faiss.read_index("data/ssripa_index.faiss")
 
 # Load metadata (original chunks)
-with open("ssripa_metadata.txt", "r", encoding="utf-8") as f:
+with open("data/ssripa_metadata.txt", "r", encoding="utf-8") as f:
     documents = [chunk.strip() for chunk in f.read().split("\n\n") if chunk.strip()]
 
-def get_embedding(text, model="text-embedding-ada-002"):
-    response = client.embeddings.create(
-        input=[text],
-        model=model
-    )
-    return np.array(response.data[0].embedding)
+def get_embedding(text):
+    """Generate embeddings using local sentence-transformers model"""
+    embedding = embedding_model.encode([text])[0]
+    return embedding.astype('float32')
 
 def retrieve_similar_chunks(query, k=3):
     query_embedding = get_embedding(query).astype("float32")
@@ -68,6 +70,8 @@ def generate_consolidated_answer(queries):
             seen.add(context)
     
     context = "\n\n".join(unique_contexts)
+    print("\n🔍 Context used for answering:")
+    print(context)
     questions_text = "\n".join([f"- {q}" for q in queries])
 
     prompt = f"""
